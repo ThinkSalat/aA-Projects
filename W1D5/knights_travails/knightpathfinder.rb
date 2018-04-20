@@ -18,6 +18,10 @@ class KnightPathFinder
     build_move_tree
   end
 
+  def inspect
+    "#{@start_pos}"
+  end
+
   def self.valid_moves(pos)
     moves = DELTAS.map do |(dx,dy)|
       [pos[0] + dx, pos[1] + dy]
@@ -46,10 +50,22 @@ class KnightPathFinder
       new_move_positions(this_node.value).each { |pos| this_node.add_child(PolyTreeNode.new(pos)) }
       queue.concat(this_node.children)
     end
-    @move_tree
   end
 
-  
+  def find_path(end_pos)
+    end_node = @move_tree.bfs(end_pos)
+    trace_path_back(end_node)
+  end
+
+  def trace_path_back(node)
+    path = []
+    until node.parent.nil?
+      path.unshift(node.value)
+      node = node.parent
+    end
+    path.unshift(node.value)
+    path
+  end
 
 end
 
